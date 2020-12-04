@@ -1,5 +1,5 @@
-import Image from 'next/image'
-import ViewSource from '../components/view-source'
+import Image from "next/image";
+import ViewSource from "../components/view-source";
 
 const Intrinsic = () => (
   <div>
@@ -7,12 +7,12 @@ const Intrinsic = () => (
     <h1>Image Component With Layout Intrinsic</h1>
     <Image
       alt="Mountains"
-      src="/mountains.jpg"
+      src="/img/mountains.jpg"
       layout="intrinsic"
       width={700}
       height={475}
     />
   </div>
-)
+);
 
-export default Intrinsic
+export default Intrinsic;
