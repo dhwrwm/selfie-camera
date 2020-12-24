@@ -1,107 +1,76 @@
-import styles from '../styles.module.css'
-import Image from 'next/image'
-import Link from 'next/link'
-import ViewSource from '../components/view-source'
+import React, { useEffect, createRef } from "react";
 
-const Code = (p) => <code className={styles.inlineCode} {...p} />
+const VIDEO_EL_WIDTH = "200";
+const VIDEO_EL_HEIGHT = "300";
 
-const Index = () => (
-  <div className={styles.container}>
-    <ViewSource pathname="pages/index.js" />
-    <div className={styles.card}>
-      <h1>Image Component with Next.js</h1>
-      <p>
-        This page demonstrates the usage of the{' '}
-        <a href="https://nextjs.org/docs/api-reference/next/image">
-          next/image
-        </a>{' '}
-        component with live examples.
-      </p>
-      <p>
-        This component is designed to{' '}
-        <a href="https://nextjs.org/docs/basic-features/image-optimization">
-          automatically optimizate
-        </a>{' '}
-        images on-demand as the browser requests them.
-      </p>
-      <hr className={styles.hr} />
-      <h2 id="layout">Layout</h2>
-      <p>
-        The <Code>layout</Code> property tells the image to respond differently
-        depending on the device size or the container size.
-      </p>
-      <p>
-        Select a layout below and try resizing the window or rotating your
-        device to see how the image reacts.
-      </p>
-      <ul>
-        <li>
-          <Link href="/layout-intrinsic">
-            <a>layout="intrinsic"</a>
-          </Link>
-        </li>
-        <li>
-          <Link href="/layout-responsive">
-            <a>layout="responsive"</a>
-          </Link>
-        </li>
-        <li>
-          <Link href="/layout-fixed">
-            <a>layout="fixed"</a>
-          </Link>
-        </li>
-        <li>
-          <Link href="/layout-fill">
-            <a>layout="fill"</a>
-          </Link>
-        </li>
-        <li>
-          <Link href="/background">
-            <a>background demo</a>
-          </Link>
-        </li>
-      </ul>
-      <hr className={styles.hr} />
-      <h2 id="internal">Internal Image</h2>
-      <p>
-        The following is an example of a reference to an interal image from the{' '}
-        <Code>public</Code> directory.
-      </p>
-      <p>
-        This image is intentionally large so you have to scroll down to the next
-        image.
-      </p>
-      <Image alt="Vercel logo" src="/vercel.png" width={1000} height={1000} />
-      <hr className={styles.hr} />
-      <h2 id="external">External Image</h2>
-      <p>
-        The following is an example of a reference to an external image at{' '}
-        <Code>assets.vercel.com</Code>.
-      </p>
-      <p>
-        External domains must be configured in <Code>next.config.js</Code> using
-        the <Code>domains</Code> property.
-      </p>
-      <Image
-        alt="Next.js logo"
-        src="https://assets.vercel.com/image/upload/v1538361091/repositories/next-js/next-js-bg.png"
-        width={1200}
-        height={400}
-      />
-      <hr className={styles.hr} />
-      <h2 id="more">Learn More</h2>
-      <p>
-        You can optionally configure a cloud provider, device sizes, and more!
-      </p>
-      <p>
-        Checkout the{' '}
-        <a href="https://nextjs.org/docs/basic-features/image-optimization">
-          Image Optimization documentation
-        </a>{' '}
-        to learn more.
-      </p>
+const Index = () => {
+  let videoEle = createRef();
+  let videoContainer = createRef();
+  let canvasEle = createRef();
+  let imageEle = createRef();
+
+  useEffect(() => {
+    startCamera();
+
+    return () => {
+      stopStream();
+    };
+  }, []);
+
+  const startCamera = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+      });
+
+      console.log("the stream is", stream);
+
+      videoEle.current.srcObject = stream;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const stopStream = () => {
+    if (!window.streamRef) return;
+    window.streamRef.getAudioTracks().forEach(function (track) {
+      track.stop();
+    });
+    window.streamRef.getVideoTracks().forEach(function (track) {
+      track.stop();
+    });
+    window.streamRef = null;
+  };
+
+  const onCapture = () => {
+    console.log("capture");
+    const width = videoEle.current.width;
+    const height = videoEle.current.height;
+
+    canvasEle.current.width = width;
+    canvasEle.current.height = height;
+    const ctx = canvasEle.current.getContext("2d");
+    // the canvasEle is drawn equivalent to video element's width and height
+    ctx.drawImage(videoEle.current, 0, 0, width, height);
+  };
+
+  return (
+    <div>
+      <video
+        ref={videoEle}
+        className="selfie-video"
+        playsInline
+        autoPlay
+        style={{}}
+        height={VIDEO_EL_HEIGHT}
+        width={VIDEO_EL_WIDTH}
+        // videoWidth={VIDEO_WIDTH}
+      ></video>
+
+      <canvas ref={canvasEle} id={"selfie-canvas"} />
+      <button onClick={() => onCapture()}>Capture</button>
     </div>
-  </div>
-)
+  );
+};
 
-export default Index
+export default Index;

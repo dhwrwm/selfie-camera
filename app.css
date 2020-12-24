@@ -2,8 +2,7 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
   margin: 0;
   padding: 0;
-  background: black;
-  color: white;
+  text-align: center;
 }
 
 a {
@@ -16,4 +15,11 @@ a {
 
 a:hover {
   border-bottom: 1px solid #0076ff;
+}
+
+
+.selfie-video{
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+  object-fit: cover;
 }
