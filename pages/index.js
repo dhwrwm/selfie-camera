@@ -62,7 +62,7 @@ const Index = () => {
         playsInline
         autoPlay
         style={{}}
-        // height={VIDEO_EL_HEIGHT}
+        height={VIDEO_EL_HEIGHT}
         width={VIDEO_EL_WIDTH}
         // videoWidth={VIDEO_WIDTH}
       ></video>
