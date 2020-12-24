@@ -43,9 +43,9 @@ const Index = () => {
   };
 
   const onCapture = () => {
-    console.log("capture");
+    console.log("capture", videoEle.current.offsetHeight);
     const width = videoEle.current.width;
-    const height = videoEle.current.height;
+    const height = videoEle.current.offsetHeight;
 
     canvasEle.current.width = width;
     canvasEle.current.height = height;
@@ -62,12 +62,12 @@ const Index = () => {
         playsInline
         autoPlay
         style={{}}
-        height={VIDEO_EL_HEIGHT}
+        // height={VIDEO_EL_HEIGHT}
         width={VIDEO_EL_WIDTH}
         // videoWidth={VIDEO_WIDTH}
       ></video>
 
-      <canvas ref={canvasEle} id={"selfie-canvas"} />
+      <canvas ref={canvasEle} className={"selfie-canvas"} />
       <button onClick={() => onCapture()}>Capture</button>
     </div>
   );

@@ -23,3 +23,8 @@ a:hover {
   transform: scaleX(-1);
   /* object-fit: cover; */
 }
+
+.selfie-canvas{
+  -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+}
