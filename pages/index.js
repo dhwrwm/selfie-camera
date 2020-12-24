@@ -55,7 +55,7 @@ const Index = () => {
   };
 
   return (
-    <div>
+    <div className="container">
       <video
         ref={videoEle}
         className="selfie-video"
