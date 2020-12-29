@@ -1,13 +1,23 @@
-import React, { useEffect, createRef } from "react";
+import React, { useEffect, createRef, useState } from "react";
+
+import Camera from "components/camera";
+import Canvas from "components/canvas";
+import RatioSelector from "components/ratio-selector";
+import { Container } from "components/common";
+import { Button } from "components/ratio-selector/styled";
+import { drawImageProp } from "helpers/canvas";
+
+import { FOUR_BY_THREE } from "constants/index";
 
 const VIDEO_EL_WIDTH = "200";
 const VIDEO_EL_HEIGHT = "300";
 
 const Index = () => {
   let videoEle = createRef();
-  let videoContainer = createRef();
   let canvasEle = createRef();
-  let imageEle = createRef();
+
+  const [selected, setSelected] = useState(FOUR_BY_THREE);
+  const [hasCaptured, setCaptured] = useState(false);
 
   useEffect(() => {
     startCamera();
@@ -22,8 +32,6 @@ const Index = () => {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: true,
       });
-
-      console.log("the stream is", stream);
 
       videoEle.current.srcObject = stream;
     } catch (err) {
@@ -43,33 +51,37 @@ const Index = () => {
   };
 
   const onCapture = () => {
-    console.log("capture", videoEle.current.offsetHeight);
-    const width = videoEle.current.width;
+    const width = videoEle.current.offsetWidth;
     const height = videoEle.current.offsetHeight;
 
     canvasEle.current.width = width;
     canvasEle.current.height = height;
     const ctx = canvasEle.current.getContext("2d");
-    // the canvasEle is drawn equivalent to video element's width and height
-    ctx.drawImage(videoEle.current, 0, 0, width, height);
+    setCaptured(true);
+    drawImageProp(ctx, videoEle.current, 0, 0, width, height);
   };
 
   return (
-    <div className="container">
-      <video
-        ref={videoEle}
-        className="selfie-video"
-        playsInline
-        autoPlay
-        style={{}}
-        height={VIDEO_EL_HEIGHT}
-        width={VIDEO_EL_WIDTH}
-        // videoWidth={VIDEO_WIDTH}
-      ></video>
-
-      <canvas ref={canvasEle} className={"selfie-canvas"} />
-      <button onClick={() => onCapture()}>Capture</button>
-    </div>
+    <Container>
+      <Camera
+        videoEle={videoEle}
+        VIDEO_EL_WIDTH={VIDEO_EL_WIDTH}
+        VIDEO_EL_HEIGHT={VIDEO_EL_HEIGHT}
+        selected={selected}
+        hide={hasCaptured}
+      />
+      <Canvas canvasEle={canvasEle} hide={!hasCaptured} />
+      {hasCaptured && (
+        <Button onClick={() => setCaptured(false)}>Retake</Button>
+      )}
+      {!hasCaptured && (
+        <RatioSelector
+          onSelect={(ratio) => setSelected(ratio)}
+          selected={selected}
+        />
+      )}
+      <Button onClick={() => onCapture()}>Capture</Button>
+    </Container>
   );
 };
 
