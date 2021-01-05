@@ -1,6 +1,6 @@
 import React, { memo } from "react";
 
-import { Wrapper, Video } from "./styled";
+import { Wrapper, Video, MessageBox, Message } from "./styled";
 
 const Camera = ({
   VIDEO_EL_HEIGHT,
@@ -8,9 +8,11 @@ const Camera = ({
   videoEle,
   selected = FOUR_BY_THREE,
   hide,
+  isCamAllowed,
+  borderRadius,
 }) => {
   return (
-    <Wrapper selected={selected} hide={hide}>
+    <Wrapper selected={selected} hide={hide} borderRadius={borderRadius}>
       <Video
         ref={videoEle}
         playsInline
@@ -18,6 +20,11 @@ const Camera = ({
         height={VIDEO_EL_HEIGHT}
         width={VIDEO_EL_WIDTH}
       ></Video>
+      {!isCamAllowed && (
+        <MessageBox>
+          <Message>Please allow camera</Message>
+        </MessageBox>
+      )}
     </Wrapper>
   );
 };

@@ -3,6 +3,7 @@ import React, { useEffect, createRef, useState } from "react";
 import Camera from "components/camera";
 import Canvas from "components/canvas";
 import RatioSelector from "components/ratio-selector";
+import BorderSelector from "components/border-selector";
 import { Container } from "components/common";
 import { Button } from "components/ratio-selector/styled";
 import { drawImageProp } from "helpers/canvas";
@@ -18,6 +19,8 @@ const Index = () => {
 
   const [selected, setSelected] = useState(FOUR_BY_THREE);
   const [hasCaptured, setCaptured] = useState(false);
+  const [isCamAllowed, setCamAllowed] = useState(false);
+  const [borderRadius, setBorderRadius] = useState(0);
 
   useEffect(() => {
     startCamera();
@@ -34,6 +37,7 @@ const Index = () => {
       });
 
       videoEle.current.srcObject = stream;
+      setCamAllowed(true);
     } catch (err) {
       console.log(err);
     }
@@ -64,13 +68,19 @@ const Index = () => {
   return (
     <Container>
       <Camera
+        isCamAllowed={isCamAllowed}
         videoEle={videoEle}
         VIDEO_EL_WIDTH={VIDEO_EL_WIDTH}
         VIDEO_EL_HEIGHT={VIDEO_EL_HEIGHT}
         selected={selected}
         hide={hasCaptured}
+        borderRadius={borderRadius}
       />
-      <Canvas canvasEle={canvasEle} hide={!hasCaptured} />
+      <Canvas
+        canvasEle={canvasEle}
+        hide={!hasCaptured}
+        borderRadius={borderRadius}
+      />
       {hasCaptured && (
         <Button onClick={() => setCaptured(false)}>Retake</Button>
       )}
@@ -78,6 +88,12 @@ const Index = () => {
         <RatioSelector
           onSelect={(ratio) => setSelected(ratio)}
           selected={selected}
+        />
+      )}
+      {!hasCaptured && (
+        <BorderSelector
+          onChange={(radius) => setBorderRadius(radius)}
+          borderRadius={borderRadius}
         />
       )}
       <Button onClick={() => onCapture()}>Capture</Button>

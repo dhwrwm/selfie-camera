@@ -4,8 +4,10 @@ import colors from "constants/colors";
 import { FOUR_BY_THREE, SIXTEEN_BY_NINE, SQUARE } from "constants/index";
 
 export const Wrapper = styled(`div`)`
-  border: 2px solid ${colors.skyBlueThree};
+  border: 2px solid ${colors.skyBlue};
   margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
 
   ${({ selected }) =>
     selected &&
@@ -33,6 +35,11 @@ export const Wrapper = styled(`div`)`
     css`
       display: none;
     `}
+  ${({ borderRadius }) =>
+    borderRadius &&
+    css`
+      border-radius: ${borderRadius}%;
+    `}
 `;
 
 export const Video = styled(`video`)`
@@ -40,4 +47,20 @@ export const Video = styled(`video`)`
   width: 100%;
   height: 100%;
   transform: scaleX(-1);
+`;
+
+export const MessageBox = styled(`div`)`
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const Message = styled("p")`
+  font-size: 16px;
+  color: ${colors.skyBlue};
 `;
